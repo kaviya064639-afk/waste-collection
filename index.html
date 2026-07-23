@@ -1,0 +1,2843 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>♻️ EcoWise Pro — Waste Management</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+    </script>
+    <!-- QRCode.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
+    </script>
+    <style>
+        /* ===== CSS VARIABLES — ROYAL BLUE & GOLD THEME ===== */
+        :root {
+            --bg-primary: #080a14;
+            --bg-secondary: #0f1322;
+            --bg-card: rgba(21, 27, 48, 0.85);
+            --bg-card-hover: rgba(30, 40, 70, 0.95);
+            --bg-glass: rgba(15, 19, 34, 0.85);
+            --border-color: rgba(255, 215, 0, 0.12);
+            --border-glow: rgba(245, 183, 0, 0.2);
+
+            /* NEW PREMIUM COLORS */
+            --gold: #f5b700;
+            --gold-dim: rgba(245, 183, 0, 0.15);
+            --royal-blue: #3b82f6;
+            --royal-blue-dim: rgba(59, 130, 246, 0.15);
+            --vivid-purple: #8b5cf6;
+            --vivid-purple-dim: rgba(139, 92, 246, 0.15);
+            --hot-pink: #ec4899;
+            --hot-pink-dim: rgba(236, 72, 153, 0.15);
+            --amber: #f59e0b;
+            --amber-dim: rgba(245, 158, 11, 0.15);
+            --crimson: #ef4444;
+            --crimson-dim: rgba(239, 68, 68, 0.15);
+
+            --text-primary: #f0f4ff;
+            --text-secondary: #a0b4d0;
+            --text-muted: #5a6f8c;
+            --text-inverse: #080a14;
+
+            --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.6);
+            --shadow-glow: 0 0 60px rgba(245, 183, 0, 0.08);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+            --sidebar-width: 260px;
+            --header-height: 72px;
+        }
+
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
+            box-shadow: 0 0 20px var(--gold-dim);
+        }
+
+        /* ===== LOGIN OVERLAY ===== */
+        #loginOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 10, 20, 0.95);
+            backdrop-filter: blur(24px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.6s ease;
+        }
+        #loginOverlay.hidden {
+            display: none;
+        }
+        .login-card {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius);
+            padding: 48px 40px;
+            width: 440px;
+            max-width: 92vw;
+            box-shadow: var(--shadow-card), var(--shadow-glow);
+            animation: slideUp 0.6s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+        }
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: var(--radius);
+            background: linear-gradient(135deg, var(--gold), var(--royal-blue), var(--vivid-purple));
+            z-index: -1;
+            opacity: 0.4;
+            filter: blur(8px);
+            animation: borderPulse 3s ease-in-out infinite;
+        }
+        @keyframes borderPulse {
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+        .login-card .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .login-card .logo i {
+            font-size: 52px;
+            background: linear-gradient(135deg, var(--gold), var(--royal-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding: 12px;
+            border-radius: 50%;
+            background-color: var(--gold-dim);
+        }
+        .login-card .logo h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-top: 10px;
+            background: linear-gradient(135deg, var(--gold), var(--royal-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .login-card .logo p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        .login-card .form-group {
+            margin-bottom: 18px;
+        }
+        .login-card .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 13px;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+        }
+        .login-card .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-primary);
+        }
+        .login-card .form-group input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px var(--gold-dim);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .login-card .form-group input::placeholder {
+            color: var(--text-muted);
+        }
+        .login-card .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            margin-bottom: 22px;
+            color: var(--text-secondary);
+        }
+        .login-card .form-options a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        .login-card .form-options a:hover {
+            text-shadow: 0 0 20px var(--gold-dim);
+        }
+        .login-card .form-options input[type="checkbox"] {
+            accent-color: var(--gold);
+        }
+        .login-card .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--gold), #d4a000);
+            color: var(--text-inverse);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+        .login-card .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(245, 183, 0, 0.3);
+        }
+        .login-card .btn-login:active {
+            transform: scale(0.97);
+        }
+        .login-card .signup-text {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .login-card .signup-text a {
+            color: var(--royal-blue);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 14px;
+            transition: var(--transition);
+            z-index: 100;
+            overflow-y: auto;
+            flex-shrink: 0;
+            backdrop-filter: blur(8px);
+        }
+        .sidebar .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 8px 20px 8px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        .sidebar .brand i {
+            font-size: 32px;
+            background: linear-gradient(135deg, var(--gold), var(--royal-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding: 8px;
+            border-radius: 12px;
+            background-color: var(--gold-dim);
+        }
+        .sidebar .brand h2 {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--gold), var(--royal-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .sidebar .nav {
+            flex: 1;
+        }
+        .sidebar .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 11px 16px;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: var(--transition);
+            cursor: pointer;
+            margin-bottom: 3px;
+            position: relative;
+        }
+        .sidebar .nav-item i {
+            width: 20px;
+            font-size: 16px;
+            text-align: center;
+        }
+        .sidebar .nav-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-primary);
+        }
+        .sidebar .nav-item.active {
+            background: var(--gold-dim);
+            color: var(--gold);
+            font-weight: 600;
+            box-shadow: inset 0 0 30px rgba(245, 183, 0, 0.05);
+        }
+        .sidebar .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            bottom: 8px;
+            width: 3px;
+            background: var(--gold);
+            border-radius: 0 4px 4px 0;
+            box-shadow: 0 0 20px var(--gold);
+        }
+        .sidebar .nav-item .badge {
+            margin-left: auto;
+            background: var(--hot-pink);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px var(--hot-pink-dim);
+        }
+        .sidebar .user-card {
+            margin-top: auto;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--border-color);
+        }
+        .sidebar .user-card .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--royal-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-inverse);
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 0 30px var(--gold-dim);
+        }
+        .sidebar .user-card .info {
+            flex: 1;
+        }
+        .sidebar .user-card .info .name {
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .sidebar .user-card .info .role {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .sidebar .user-card .logout-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 17px;
+            transition: var(--transition);
+            padding: 4px;
+        }
+        .sidebar .user-card .logout-btn:hover {
+            color: var(--crimson);
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            min-height: 100vh;
+            padding: 0 28px 28px 28px;
+            overflow-x: hidden;
+            background: radial-gradient(ellipse at 20% 50%, rgba(245, 183, 0, 0.03) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(59, 130, 246, 0.03) 0%, transparent 60%);
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 0;
+            position: sticky;
+            top: 0;
+            background: transparent;
+            z-index: 50;
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid transparent;
+        }
+        .header .left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .header .left .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 4px;
+        }
+        .header .left h1 {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header .left h1 span {
+            font-weight: 400;
+            color: var(--text-muted);
+            -webkit-text-fill-color: var(--text-muted);
+        }
+        .header .right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .header .right .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 7px 16px;
+            gap: 10px;
+            transition: var(--transition);
+            backdrop-filter: blur(8px);
+        }
+        .header .right .search-box:focus-within {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px var(--gold-dim);
+        }
+        .header .right .search-box input {
+            border: none;
+            background: none;
+            outline: none;
+            font-size: 13px;
+            color: var(--text-primary);
+            width: 160px;
+        }
+        .header .right .search-box input::placeholder {
+            color: var(--text-muted);
+        }
+        .header .right .search-box i {
+            color: var(--text-muted);
+        }
+        .header .right .notif-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            color: var(--text-secondary);
+            backdrop-filter: blur(8px);
+        }
+        .header .right .notif-btn:hover {
+            border-color: var(--royal-blue);
+            color: var(--royal-blue);
+            box-shadow: 0 0 30px var(--royal-blue-dim);
+        }
+        .header .right .notif-btn .dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--crimson);
+            border-radius: 50%;
+            border: 2px solid var(--bg-card);
+            box-shadow: 0 0 20px var(--crimson);
+        }
+        .header .right .lang-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 7px 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(8px);
+        }
+        .header .right .lang-btn:hover {
+            border-color: var(--vivid-purple);
+            color: var(--vivid-purple);
+        }
+
+        /* ===== PAGES ===== */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .page.active {
+            display: block;
+        }
+
+        /* ===== STATS GRID ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius);
+            padding: 20px 22px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gold), var(--royal-blue));
+            opacity: 0.5;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--gold-dim);
+            box-shadow: var(--shadow-glow);
+            background: var(--bg-card-hover);
+        }
+        .stat-card .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .stat-card .top .label {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .stat-card .top .icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        .stat-card .top .icon.gold {
+            background: var(--gold-dim);
+            color: var(--gold);
+        }
+        .stat-card .top .icon.amber {
+            background: var(--amber-dim);
+            color: var(--amber);
+        }
+        .stat-card .top .icon.blue {
+            background: var(--royal-blue-dim);
+            color: var(--royal-blue);
+        }
+        .stat-card .top .icon.purple {
+            background: var(--vivid-purple-dim);
+            color: var(--vivid-purple);
+        }
+        .stat-card .top .icon.pink {
+            background: var(--hot-pink-dim);
+            color: var(--hot-pink);
+        }
+        .stat-card .value {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .stat-card .change {
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+        .stat-card .change.up {
+            color: var(--gold);
+        }
+        .stat-card .change.down {
+            color: var(--crimson);
+        }
+
+        /* ===== CHARTS ROW ===== */
+        .charts-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        .chart-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius);
+            padding: 22px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .chart-card:hover {
+            border-color: var(--royal-blue-dim);
+        }
+        .chart-card .title {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-secondary);
+        }
+        .chart-card .title .sub {
+            font-weight: 400;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        .chart-card canvas {
+            width: 100% !important;
+            max-height: 200px;
+        }
+
+        /* ===== AI CLASSIFY ===== */
+        .classify-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius);
+            padding: 36px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            position: relative;
+            min-height: 320px;
+        }
+        .upload-area:hover {
+            border-color: var(--gold);
+            box-shadow: 0 0 40px var(--gold-dim);
+        }
+        .upload-area.dragover {
+            border-color: var(--gold);
+            background: var(--gold-dim);
+        }
+        .upload-area i {
+            font-size: 48px;
+            color: var(--gold);
+            opacity: 0.6;
+            margin-bottom: 10px;
+        }
+        .upload-area p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        .upload-area .browse-btn {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 10px 28px;
+            background: linear-gradient(135deg, var(--gold), #d4a000);
+            color: var(--text-inverse);
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 13px;
+            transition: var(--transition);
+            border: none;
+        }
+        .upload-area .browse-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 32px rgba(245, 183, 0, 0.3);
+        }
+        .upload-area input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .upload-area .thumbnails {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+            justify-content: center;
+        }
+        .upload-area .thumbnails .thumb {
+            width: 72px;
+            height: 72px;
+            border-radius: var(--radius-sm);
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .upload-area .thumbnails .thumb:hover {
+            border-color: var(--gold);
+            transform: scale(1.06);
+            box-shadow: 0 0 30px var(--gold-dim);
+        }
+        .result-area {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius);
+            padding: 28px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 320px;
+            transition: var(--transition);
+        }
+        .result-area:hover {
+            border-color: var(--vivid-purple-dim);
+        }
+        .result-area .placeholder {
+            text-align: center;
+            color: var(--text-muted);
+        }
+        .result-area .placeholder i {
+            font-size: 56px;
+            opacity: 0.3;
+            margin-bottom: 10px;
+        }
+        .result-area .result-content {
+            width: 100%;
+            text-align: center;
+        }
+        .result-area .result-content .prediction {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--gold);
+            text-shadow: 0 0 40px var(--gold-dim);
+        }
+        .result-area .result-content .confidence {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .result-area .result-content .confidence-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        .result-area .result-content .confidence-bar .fill {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, var(--gold), var(--royal-blue));
+            transition: width 1s ease;
+            box-shadow: 0 0 20px var(--gold-dim);
+        }
+        .result-area .result-content .details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 16px;
+            text-align: left;
+        }
+        .result-area .result-content .details .item {
+            background: var(--bg-secondary);
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+        }
+        .result-area .result-content .details .item .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .result-area .result-content .details .item .val {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        /* ===== BINS ===== */
+        .bins-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+        .bin-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .bin-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--royal-blue-dim);
+            box-shadow: var(--shadow-glow);
+        }
+        .bin-card .bin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .bin-card .bin-header .bin-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .bin-card .bin-header .status {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 12px;
+            border-radius: 20px;
+        }
+        .bin-card .bin-header .status.green {
+            background: var(--gold-dim);
+            color: var(--gold);
+        }
+        .bin-card .bin-header .status.yellow {
+            background: var(--amber-dim);
+            color: var(--amber);
+        }
+        .bin-card .bin-header .status.red {
+            background: var(--crimson-dim);
+            color: var(--crimson);
+        }
+        .bin-card .bin-level {
+            margin: 10px 0;
+        }
+        .bin-card .bin-level .level-bar {
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .bin-card .bin-level .level-bar .fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.8s ease;
+        }
+        .bin-card .bin-level .level-bar .fill.green {
+            background: var(--gold);
+        }
+        .bin-card .bin-level .level-bar .fill.yellow {
+            background: var(--amber);
+        }
+        .bin-card .bin-level .level-bar .fill.red {
+            background: var(--crimson);
+        }
+        .bin-card .bin-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .bin-card .bin-footer .fill-pct {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        /* ===== GAMIFICATION ===== */
+        .gamification-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .gamification-grid .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .points-card {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius);
+            padding: 28px 32px;
+            border: 1px solid var(--border-glow);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .points-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 40%, rgba(245, 183, 0, 0.05) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .points-card .points-value {
+            font-size: 52px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--gold), var(--royal-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .points-card .points-label {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        .points-card .level-info {
+            margin-top: 6px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .points-card .level-bar {
+            height: 6px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        .points-card .level-bar .fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold), var(--royal-blue));
+            border-radius: 10px;
+            transition: width 0.8s ease;
+            box-shadow: 0 0 30px var(--gold-dim);
+        }
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 10px;
+        }
+        .badge-item {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius-sm);
+            padding: 14px 10px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .badge-item:hover {
+            transform: translateY(-2px);
+            border-color: var(--vivid-purple-dim);
+        }
+        .badge-item .icon {
+            font-size: 28px;
+            margin-bottom: 2px;
+        }
+        .badge-item .name {
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .badge-item .desc {
+            font-size: 9px;
+            color: var(--text-muted);
+        }
+        .badge-item.locked {
+            opacity: 0.35;
+            filter: grayscale(0.8);
+        }
+        .badge-item.locked .icon {
+            filter: grayscale(1);
+        }
+
+        /* ===== LEADERBOARD ===== */
+        .leaderboard-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+        }
+        .leaderboard-card .lb-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .leaderboard-card .lb-item:last-child {
+            border-bottom: none;
+        }
+        .leaderboard-card .lb-item .rank {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--text-muted);
+            width: 28px;
+            text-align: center;
+        }
+        .leaderboard-card .lb-item .rank.gold {
+            color: var(--gold);
+            text-shadow: 0 0 30px rgba(245, 183, 0, 0.3);
+        }
+        .leaderboard-card .lb-item .rank.silver {
+            color: #c0c0c0;
+        }
+        .leaderboard-card .lb-item .rank.bronze {
+            color: #cd7f32;
+        }
+        .leaderboard-card .lb-item .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gold-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--gold);
+            font-size: 13px;
+        }
+        .leaderboard-card .lb-item .info {
+            flex: 1;
+        }
+        .leaderboard-card .lb-item .info .name {
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .leaderboard-card .lb-item .info .neighborhood {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .leaderboard-card .lb-item .points {
+            font-weight: 600;
+            color: var(--gold);
+            font-size: 14px;
+        }
+
+        /* ===== VOICE REPORT ===== */
+        .voice-section {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .voice-section:hover {
+            border-color: var(--hot-pink-dim);
+        }
+        .voice-section .voice-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+        .voice-section .voice-header i {
+            font-size: 28px;
+            color: var(--hot-pink);
+        }
+        .voice-section .voice-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .voice-section .voice-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            margin-bottom: 14px;
+        }
+        .voice-section .voice-status .pulse-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            transition: var(--transition);
+        }
+        .voice-section .voice-status .pulse-dot.listening {
+            background: var(--crimson);
+            animation: pulse 1.2s ease-in-out infinite;
+            box-shadow: 0 0 30px var(--crimson);
+        }
+        .voice-section .voice-status .pulse-dot.processing {
+            background: var(--amber);
+            animation: pulse 0.8s ease-in-out infinite;
+            box-shadow: 0 0 30px var(--amber);
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.4);
+                opacity: 0.6;
+            }
+        }
+        .voice-section .voice-status .status-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .voice-section .voice-transcript {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            min-height: 60px;
+            color: var(--text-primary);
+            font-size: 15px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 14px;
+            font-style: italic;
+        }
+        .voice-section .voice-transcript .placeholder-text {
+            color: var(--text-muted);
+        }
+        .voice-section .voice-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .voice-section .voice-actions button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .voice-section .voice-actions .btn-start {
+            background: linear-gradient(135deg, var(--hot-pink), #db2777);
+            color: #fff;
+        }
+        .voice-section .voice-actions .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(236, 72, 153, 0.3);
+        }
+        .voice-section .voice-actions .btn-start:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .voice-section .voice-actions .btn-stop {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+        .voice-section .voice-actions .btn-stop:hover {
+            border-color: var(--crimson);
+            color: var(--crimson);
+        }
+        .voice-section .voice-actions .btn-submit {
+            background: linear-gradient(135deg, var(--gold), #d4a000);
+            color: var(--text-inverse);
+        }
+        .voice-section .voice-actions .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(245, 183, 0, 0.3);
+        }
+        .voice-section .voice-actions .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .voice-reports-list {
+            margin-top: 16px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .voice-reports-list .report-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            margin-bottom: 6px;
+            border-left: 3px solid var(--gold);
+            font-size: 13px;
+        }
+        .voice-reports-list .report-item .time {
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        /* ===== QR CODE ===== */
+        .qr-section {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+        .qr-section #qrcode {
+            display: inline-block;
+            background: #fff;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            margin: 10px 0;
+        }
+        .qr-section .qr-input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .qr-section .qr-input-group input {
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 13px;
+            min-width: 220px;
+        }
+        .qr-section .qr-input-group input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+        .qr-section .qr-input-group button {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--vivid-purple), #7c3aed);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .qr-section .qr-input-group button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.3);
+        }
+
+        /* ===== SCHEDULING ===== */
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .schedule-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius);
+            padding: 22px;
+            border: 1px solid var(--border-color);
+        }
+        .schedule-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+        .schedule-card .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+        .schedule-card .schedule-item:last-child {
+            border-bottom: none;
+        }
+        .schedule-card .schedule-item .day {
+            color: var(--text-secondary);
+        }
+        .schedule-card .schedule-item .time {
+            color: var(--gold);
+            font-weight: 500;
+        }
+        .schedule-card .schedule-item .status-pill {
+            font-size: 11px;
+            padding: 2px 12px;
+            border-radius: 20px;
+            background: var(--gold-dim);
+            color: var(--gold);
+        }
+        .schedule-card .schedule-item .status-pill.soon {
+            background: var(--amber-dim);
+            color: var(--amber);
+        }
+
+        /* ===== WASTE-TO-ENERGY ===== */
+        .energy-calc {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+        }
+        .energy-calc .calc-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .energy-calc .calc-row label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            min-width: 120px;
+        }
+        .energy-calc .calc-row input[type="range"] {
+            flex: 1;
+            accent-color: var(--gold);
+            min-width: 120px;
+        }
+        .energy-calc .calc-row .value-display {
+            font-weight: 700;
+            color: var(--gold);
+            min-width: 60px;
+            text-align: right;
+        }
+        .energy-calc .result-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .energy-calc .result-box .res-item {
+            background: var(--bg-secondary);
+            padding: 14px;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        .energy-calc .result-box .res-item .res-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--royal-blue);
+        }
+        .energy-calc .result-box .res-item .res-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* ===== CHATBOT ===== */
+        .chatbot-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 300;
+        }
+        .chatbot-toggle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--royal-blue));
+            border: none;
+            color: var(--text-inverse);
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(245, 183, 0, 0.3);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .chatbot-toggle:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 48px rgba(245, 183, 0, 0.5);
+        }
+        .chatbot-window {
+            position: absolute;
+            bottom: 72px;
+            right: 0;
+            width: 380px;
+            max-width: 85vw;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-glow);
+            box-shadow: var(--shadow-card), var(--shadow-glow);
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            max-height: 460px;
+            backdrop-filter: blur(16px);
+        }
+        .chatbot-window.open {
+            display: flex;
+        }
+        .chatbot-window .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .chatbot-window .chat-header h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .chatbot-window .chat-header .close-chat {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .chatbot-window .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 280px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-right: 4px;
+        }
+        .chatbot-window .chat-messages .msg {
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            max-width: 85%;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .chatbot-window .chat-messages .msg.bot {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            align-self: flex-start;
+            border: 1px solid var(--border-color);
+        }
+        .chatbot-window .chat-messages .msg.user {
+            background: linear-gradient(135deg, var(--gold), #d4a000);
+            color: var(--text-inverse);
+            align-self: flex-end;
+        }
+        .chatbot-window .chat-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+        .chatbot-window .chat-input input {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+        .chatbot-window .chat-input input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+        .chatbot-window .chat-input button {
+            padding: 10px 18px;
+            background: linear-gradient(135deg, var(--gold), #d4a000);
+            color: var(--text-inverse);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .chatbot-window .chat-input button:hover {
+            box-shadow: 0 8px 32px rgba(245, 183, 0, 0.3);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .charts-row {
+                grid-template-columns: 1fr;
+            }
+            .classify-grid,
+            .gamification-grid,
+            .schedule-grid {
+                grid-template-columns: 1fr;
+            }
+            .energy-calc .result-box {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                bottom: 0;
+                width: 280px;
+                z-index: 200;
+                box-shadow: var(--shadow-card);
+                transition: left 0.3s ease;
+            }
+            .sidebar.open {
+                left: 0;
+            }
+            .header .left .menu-toggle {
+                display: block;
+            }
+            .main-content {
+                padding: 0 14px 14px 14px;
+            }
+            .header .right .search-box input {
+                width: 100px;
+            }
+            .header .right .lang-btn span {
+                display: none;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .bins-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .result-area .result-content .details {
+                grid-template-columns: 1fr;
+            }
+            .chatbot-window {
+                width: 320px;
+                right: -20px;
+            }
+            .login-card {
+                padding: 32px 20px;
+            }
+        }
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .bins-grid {
+                grid-template-columns: 1fr;
+            }
+            .header .right .search-box {
+                display: none;
+            }
+            .points-card .points-value {
+                font-size: 38px;
+            }
+            .voice-section .voice-actions button {
+                width: 100%;
+                justify-content: center;
+            }
+            .qr-section .qr-input-group input {
+                min-width: 100%;
+            }
+            .chatbot-window {
+                width: 290px;
+                right: -10px;
+            }
+        }
+
+        /* ===== OVERLAY ===== */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 150;
+            backdrop-filter: blur(4px);
+        }
+        .sidebar-overlay.show {
+            display: block;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* ===== TOAST ===== */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+            pointer-events: none;
+        }
+        .toast {
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            padding: 12px 24px;
+            box-shadow: var(--shadow-card), var(--shadow-glow);
+            border-left: 4px solid var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideUp 0.4s ease;
+            border: 1px solid var(--border-color);
+            pointer-events: auto;
+            backdrop-filter: blur(12px);
+            min-width: 240px;
+            max-width: 90vw;
+        }
+        .toast .icon {
+            font-size: 18px;
+        }
+        .toast .msg {
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .toast .close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .toast.error {
+            border-left-color: var(--crimson);
+        }
+        .toast.success {
+            border-left-color: var(--gold);
+        }
+        .toast.info {
+            border-left-color: var(--royal-blue);
+        }
+        .toast.warning {
+            border-left-color: var(--amber);
+        }
+
+        /* misc */
+        .mt-16 {
+            margin-top: 16px;
+        }
+        .mb-16 {
+            margin-bottom: 16px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== WASTE GALLERY (Premium Look) ===== */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+            margin-top: 12px;
+        }
+        .gallery-item {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius-sm);
+            padding: 16px 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+        .gallery-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 0 0 4px 4px;
+        }
+        .gallery-item:hover {
+            transform: translateY(-6px) scale(1.02);
+            border-color: var(--gold);
+            box-shadow: var(--shadow-glow);
+        }
+        .gallery-item .icon-wrap {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            transition: var(--transition);
+        }
+        .gallery-item:hover .icon-wrap {
+            transform: scale(1.1) rotate(-5deg);
+        }
+        .gallery-item .label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 4px;
+        }
+        .gallery-item .badge-type {
+            display: inline-block;
+            font-size: 10px;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+        .gallery-item.type-recyclable .icon-wrap {
+            background: var(--gold-dim);
+            color: var(--gold);
+        }
+        .gallery-item.type-recyclable::before {
+            background: var(--gold);
+        }
+        .gallery-item.type-recyclable .badge-type {
+            background: var(--gold-dim);
+            color: var(--gold);
+        }
+        .gallery-item.type-organic .icon-wrap {
+            background: var(--amber-dim);
+            color: var(--amber);
+        }
+        .gallery-item.type-organic::before {
+            background: var(--amber);
+        }
+        .gallery-item.type-organic .badge-type {
+            background: var(--amber-dim);
+            color: var(--amber);
+        }
+        .gallery-item.type-hazardous .icon-wrap {
+            background: var(--crimson-dim);
+            color: var(--crimson);
+        }
+        .gallery-item.type-hazardous::before {
+            background: var(--crimson);
+        }
+        .gallery-item.type-hazardous .badge-type {
+            background: var(--crimson-dim);
+            color: var(--crimson);
+        }
+        .gallery-item.type-plastic .icon-wrap {
+            background: var(--royal-blue-dim);
+            color: var(--royal-blue);
+        }
+        .gallery-item.type-plastic::before {
+            background: var(--royal-blue);
+        }
+        .gallery-item.type-plastic .badge-type {
+            background: var(--royal-blue-dim);
+            color: var(--royal-blue);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== LOGIN OVERLAY ===== -->
+    <div id="loginOverlay">
+        <div class="login-card">
+            <div class="logo">
+                <i class="fas fa-leaf"></i>
+                <h1>EcoWise Pro</h1>
+                <p>Intelligent Waste Management · v3.0</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label><i class="fas fa-envelope" style="margin-right:6px;"></i> Email</label>
+                    <input type="email" id="loginEmail" placeholder="your@email.com" value="admin@ecowise.com" />
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock" style="margin-right:6px;"></i> Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" value="password123" />
+                </div>
+                <div class="form-options">
+                    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+                        <input type="checkbox" checked /> Remember me
+                    </label>
+                    <a href="#">Forgot password?</a>
+                </div>
+                <button type="submit" class="btn-login">
+                    <i class="fas fa-sign-in-alt" style="margin-right:8px;"></i> Sign In
+                </button>
+            </form>
+            <div class="signup-text">
+                Don't have an account? <a href="#">Sign up</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ===== SIDEBAR OVERLAY ===== -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <i class="fas fa-leaf"></i>
+            <h2>EcoWise</h2>
+        </div>
+        <nav class="nav">
+            <div class="nav-item active" data-page="dashboard"><i class="fas fa-th-large"></i> Dashboard</div>
+            <div class="nav-item" data-page="classify"><i class="fas fa-robot"></i> AI Classify <span class="badge">NEW</span></div>
+            <div class="nav-item" data-page="bins"><i class="fas fa-trash-alt"></i> Smart Bins <span class="badge">LIVE</span></div>
+            <div class="nav-item" data-page="voice"><i class="fas fa-microphone"></i> Voice Report <span class="badge">⭐</span></div>
+            <div class="nav-item" data-page="gamification"><i class="fas fa-trophy"></i> Gamification</div>
+            <div class="nav-item" data-page="carbon"><i class="fas fa-cloud-sun"></i> Carbon</div>
+            <div class="nav-item" data-page="leaderboard"><i class="fas fa-ranking-star"></i> Leaderboard</div>
+            <div class="nav-item" data-page="schedule"><i class="fas fa-calendar-check"></i> Schedule</div>
+            <div class="nav-item" data-page="energy"><i class="fas fa-bolt"></i> Waste-to-Energy</div>
+            <div class="nav-item" data-page="qr"><i class="fas fa-qrcode"></i> QR Codes</div>
+        </nav>
+        <div class="user-card">
+            <div class="avatar">A</div>
+            <div class="info">
+                <div class="name">Admin User</div>
+                <div class="role">Waste Manager</div>
+            </div>
+            <button class="logout-btn" id="logoutBtn" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="main-content">
+
+        <!-- ===== HEADER ===== -->
+        <header class="header">
+            <div class="left">
+                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+                <h1 id="pageTitle">Dashboard <span>overview</span></h1>
+            </div>
+            <div class="right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search..." id="globalSearch" />
+                </div>
+                <button class="lang-btn" id="langToggle"><i class="fas fa-globe"></i> <span id="langLabel">EN</span></button>
+                <button class="notif-btn" id="notifBtn"><i class="fas fa-bell"></i><span class="dot"></span></button>
+            </div>
+        </header>
+
+        <!-- ===== PAGE: DASHBOARD ===== -->
+        <div class="page active" id="page-dashboard">
+            <div class="stats-grid">
+                <div class="stat-card"><div class="top"><span class="label">Total Waste</span><span class="icon gold"><i class="fas fa-recycle"></i></span></div><div class="value" id="totalWaste">12,847</div><div class="change up"><i class="fas fa-arrow-up"></i> +12.5%</div></div>
+                <div class="stat-card"><div class="top"><span class="label">Recycled</span><span class="icon blue"><i class="fas fa-circle-check"></i></span></div><div class="value" id="recycledWaste">8,423</div><div class="change up"><i class="fas fa-arrow-up"></i> +8.2%</div></div>
+                <div class="stat-card"><div class="top"><span class="label">Active Bins</span><span class="icon purple"><i class="fas fa-trash-can"></i></span></div><div class="value" id="activeBins">47</div><div class="change up"><i class="fas fa-arrow-up"></i> +3 new</div></div>
+                <div class="stat-card"><div class="top"><span class="label">Carbon Offset</span><span class="icon amber"><i class="fas fa-leaf"></i></span></div><div class="value" id="carbonOffset">2.4<span style="font-size:16px;">t</span></div><div class="change up"><i class="fas fa-arrow-up"></i> +18%</div></div>
+            </div>
+
+            <div class="charts-row">
+                <div class="chart-card"><div class="title">Collection Trends <span class="sub">last 7 days</span></div><canvas id="trendChart"></canvas></div>
+                <div class="chart-card"><div class="title">Waste Composition <span class="sub">by category</span></div><canvas id="compositionChart"></canvas></div>
+            </div>
+
+            <!-- ===== WASTE GALLERY ===== -->
+            <div class="chart-card" style="margin-top:8px;">
+                <div class="title">📸 Waste Gallery <span class="sub">recently detected items</span></div>
+                <div class="gallery-grid" id="wasteGallery"></div>
+            </div>
+
+            <div class="grid-2" style="margin-top:20px;">
+                <div class="chart-card">
+                    <div class="title">Recent Activity</div>
+                    <div style="display:flex;flex-direction:column;gap:8px;">
+                        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border-color);"><span style="background:var(--gold-dim);padding:6px 10px;border-radius:50%;color:var(--gold);"><i class="fas fa-trash"></i></span><div><strong>Bin #12</strong> collected <span style="color:var(--text-muted);font-size:13px;">2 min ago</span></div></div>
+                        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border-color);"><span style="background:var(--amber-dim);padding:6px 10px;border-radius:50%;color:var(--amber);"><i class="fas fa-recycle"></i></span><div><strong>Recycling</strong> processed <span style="color:var(--text-muted);font-size:13px;">15 min ago</span></div></div>
+                        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border-color);"><span style="background:var(--royal-blue-dim);padding:6px 10px;border-radius:50%;color:var(--royal-blue);"><i class="fas fa-leaf"></i></span><div><strong>Compost</strong> delivered <span style="color:var(--text-muted);font-size:13px;">1 hour ago</span></div></div>
+                        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;"><span style="background:var(--vivid-purple-dim);padding:6px 10px;border-radius:50%;color:var(--vivid-purple);"><i class="fas fa-robot"></i></span><div><strong>AI</strong> classified 5 items <span style="color:var(--text-muted);font-size:13px;">2 hours ago</span></div></div>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="title">AI Insights <span class="sub">recommendations</span></div>
+                    <div style="display:flex;flex-direction:column;gap:8px;">
+                        <div style="background:var(--bg-secondary);padding:12px 16px;border-radius:var(--radius-sm);border-left:3px solid var(--gold);"><div style="font-weight:600;">📊 Recycling rate up 8%</div><div style="font-size:12px;color:var(--text-muted);">Organic waste segregation improved.</div></div>
+                        <div style="background:var(--bg-secondary);padding:12px 16px;border-radius:var(--radius-sm);border-left:3px solid var(--amber);"><div style="font-weight:600;">⚠️ Bin #07 at 92%</div><div style="font-size:12px;color:var(--text-muted);">Schedule collection soon.</div></div>
+                        <div style="background:var(--bg-secondary);padding:12px 16px;border-radius:var(--radius-sm);border-left:3px solid var(--royal-blue);"><div style="font-weight:600;">🌱 1.2t CO₂ offset</div><div style="font-size:12px;color:var(--text-muted);">Equivalent to 58 trees planted.</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PAGE: AI CLASSIFY ===== -->
+        <div class="page" id="page-classify">
+            <div class="classify-grid">
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p><strong>Drag & drop</strong> an image or click to browse</p>
+                    <p style="font-size:12px;color:var(--text-muted);">Supports: JPG, PNG, WEBP</p>
+                    <span class="browse-btn">Browse Files</span>
+                    <input type="file" id="fileInput" accept="image/*" multiple />
+                    <div class="thumbnails" id="thumbnailsContainer"></div>
+                </div>
+                <div class="result-area" id="resultArea">
+                    <div class="placeholder" id="placeholder"><i class="fas fa-robot"></i><h3>AI Classification</h3><p style="color:var(--text-muted);">Upload an image to identify waste type</p></div>
+                    <div class="result-content" id="resultContent" style="display:none;">
+                        <div style="display:flex;align-items:center;gap:16px;justify-content:center;margin-bottom:14px;flex-wrap:wrap;">
+                            <img id="resultThumb" src="" alt="result" style="width:100px;height:100px;border-radius:var(--radius-sm);object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 40px var(--gold-dim);" />
+                            <div style="text-align:left;"><div class="prediction" id="predictionLabel">Plastic Bottle</div><div class="confidence" id="confidenceLabel">Confidence: 94%</div></div>
+                        </div>
+                        <div class="confidence-bar"><div class="fill" id="confidenceFill" style="width:94%;"></div></div>
+                        <div class="details">
+                            <div class="item"><div class="label">Category</div><div class="val" id="catCategory">Recyclable</div></div>
+                            <div class="item"><div class="label">Material</div><div class="val" id="catMaterial">PET Plastic</div></div>
+                            <div class="item"><div class="label">Biodegradable</div><div class="val" id="catBio">No</div></div>
+                            <div class="item"><div class="label">Recycle Score</div><div class="val" id="catScore">92 / 100</div></div>
+                        </div>
+                        <button style="margin-top:16px;padding:10px 28px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:var(--radius-sm);font-weight:500;cursor:pointer;transition:var(--transition);" id="resetClassify">Upload Another</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PAGE: SMART BINS ===== -->
+        <div class="page" id="page-bins">
+            <div class="bins-grid" id="binsGrid"></div>
+            <div class="chart-card"><div class="title">Bin Fill Level History <span class="sub">last 24 hours</span></div><canvas id="binHistoryChart"></canvas></div>
+        </div>
+
+        <!-- ===== PAGE: VOICE REPORT ===== -->
+        <div class="page" id="page-voice">
+            <div class="voice-section">
+                <div class="voice-header"><i class="fas fa-microphone"></i><h3>Voice Report <span style="font-size:13px;font-weight:400;color:var(--text-muted);">— Speak to report waste issues</span></h3></div>
+                <div class="voice-status">
+                    <div class="pulse-dot" id="voiceDot"></div>
+                    <span class="status-text" id="voiceStatusText">Ready — click "Start Listening"</span>
+                </div>
+                <div class="voice-transcript" id="voiceTranscript"><span class="placeholder-text">Your spoken report will appear here...</span></div>
+                <div class="voice-actions">
+                    <button class="btn-start" id="voiceStartBtn"><i class="fas fa-play"></i> Start Listening</button>
+                    <button class="btn-stop" id="voiceStopBtn" disabled><i class="fas fa-stop"></i> Stop</button>
+                    <button class="btn-submit" id="voiceSubmitBtn" disabled><i class="fas fa-paper-plane"></i> Submit Report</button>
+                </div>
+                <div class="voice-reports-list" id="voiceReportsList">
+                    <div style="color:var(--text-muted);font-size:13px;padding:8px 0;">No reports yet. Speak to create one.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PAGE: GAMIFICATION ===== -->
+        <div class="page" id="page-gamification">
+            <div class="gamification-grid">
+                <div class="left-panel">
+                    <div class="points-card"><div class="points-label">Your Points</div><div class="points-value" id="userPoints">2,847</div><div class="level-info">🏅 Level 7 · <span id="nextLevel">1,153</span> points to next level</div><div class="level-bar"><div class="fill" id="levelFill" style="width:63%;"></div></div></div>
+                    <div style="background:var(--bg-card);border-radius:var(--radius);padding:22px;border:1px solid var(--border-color);">
+                        <h3 style="margin-bottom:10px;font-size:16px;">🏆 Recent Achievements</h3>
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <div style="display:flex;align-items:center;gap:12px;padding:6px 0;border-bottom:1px solid var(--border-color);"><span style="font-size:22px;">♻️</span><div><strong>Recycle Master</strong> <span style="font-size:12px;color:var(--text-muted);">— 100 items</span></div><span style="margin-left:auto;color:var(--amber);font-weight:600;">+50</span></div>
+                            <div style="display:flex;align-items:center;gap:12px;padding:6px 0;border-bottom:1px solid var(--border-color);"><span style="font-size:22px;">🌱</span><div><strong>Green Warrior</strong> <span style="font-size:12px;color:var(--text-muted);">— 50 kg compost</span></div><span style="margin-left:auto;color:var(--amber);font-weight:600;">+30</span></div>
+                            <div style="display:flex;align-items:center;gap:12px;padding:6px 0;"><span style="font-size:22px;">📸</span><div><strong>AI Pioneer</strong> <span style="font-size:12px;color:var(--text-muted);">— 10 scans</span></div><span style="margin-left:auto;color:var(--amber);font-weight:600;">+20</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div><h3 style="margin-bottom:10px;font-size:16px;">🎖️ Badges</h3><div class="badges-grid" id="badgesGrid"></div></div>
+            </div>
+        </div>
+
+        <!-- ===== PAGE: CARBON ===== -->
+        <div class="page" id="page-carbon">
+            <div class="grid-2">
+                <div>
+                    <div class="chart-card" style="margin-bottom:16px;"><div class="title">Carbon Impact <span class="sub">this month</span></div><canvas id="carbonChart" style="max-height:180px;"></canvas></div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div class="stat-card"><div class="top"><span class="label">CO₂ Saved</span><span class="icon gold"><i class="fas fa-leaf"></i></span></div><div class="value" style="font-size:22px;" id="co2Saved">2.4t</div></div>
+                        <div class="stat-card"><div class="top"><span class="label">Trees Planted</span><span class="icon blue"><i class="fas fa-tree"></i></span></div><div class="value" style="font-size:22px;" id="treesPlanted">58</div></div>
+                        <div class="stat-card"><div class="top"><span class="label">Energy Saved</span><span class="icon amber"><i class="fas fa-bolt"></i></span></div><div class="value" style="font-size:22px;" id="energySaved">1,240 kWh</div></div>
+                        <div class="stat-card"><div class="top"><span class="label">Waste Diverted</span><span class="icon purple"><i class="fas fa-recycle"></i></span></div><div class="value" style="font-size:22px;" id="wasteDiverted">76%</div></div>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="title">Waste Breakdown <span class="sub">by type</span></div>
+                    <div style="display:flex;flex-direction:column;gap:12px;padding-top:6px;">
+                        <div><div style="display:flex;justify-content:space-between;font-size:13px;"><span>Organic</span><span>42%</span></div><div style="height:6px;background:var(--bg-secondary);border-radius:10px;overflow:hidden;margin-top:3px;"><div style="width:42%;height:100%;background:var(--gold);border-radius:10px;"></div></div></div>
+                        <div><div style="display:flex;justify-content:space-between;font-size:13px;"><span>Plastic</span><span>28%</span></div><div style="height:6px;background:var(--bg-secondary);border-radius:10px;overflow:hidden;margin-top:3px;"><div style="width:28%;height:100%;background:var(--amber);border-radius:10px;"></div></div></div>
+                        <div><div style="display:flex;justify-content:space-between;font-size:13px;"><span>Paper</span><span>15%</span></div><div style="height:6px;background:var(--bg-secondary);border-radius:10px;overflow:hidden;margin-top:3px;"><div style="width:15%;height:100%;background:var(--royal-blue);border-radius:10px;"></div></div></div>
+                        <div><div style="display:flex;justify-content:space-between;font-size:13px;"><span>Glass</span><span>10%</span></div><div style="height:6px;background:var(--bg-secondary);border-radius:10px;overflow:hidden;margin-top:3px;"><div style="width:10%;height:100%;background:var(--vivid-purple);border-radius:10px;"></div></div></div>
+                        <div><div style="display:flex;justify-content:space-between;font-size:13px;"><span>Metal</span><span>5%</span></div><div style="height:6px;background:var(--bg-secondary);border-radius:10px;overflow:hidden;margin-top:3px;"><div style="width:5%;height:100%;background:var(--hot-pink);border-radius:10px;"></div></div></div>
+                    </div>
+                    <div style="margin-top:16px;padding:12px 16px;background:var(--bg-secondary);border-radius:var(--radius-sm);border-left:3px solid var(--gold);"><p style="font-size:13px;color:var(--text-secondary);"><i class="fas fa-lightbulb" style="color:var(--amber);margin-right:8px;"></i>Tip: Composting organic waste reduces footprint by up to 30%.</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PAGE: LEADERBOARD ===== -->
+        <div class="page" id="page-leaderboard">
+            <div class="leaderboard-card">
+                <div class="title" style="margin-bottom:14px;">🏅 Community Leaderboard <span class="sub">top recyclers</span></div>
+                <div id="leaderboardList"></div>
+            </div>
+        </div>
+
+        <!-- ===== PAGE: SCHEDULE ===== -->
+        <div class="page" id="page-schedule">
+            <div class="schedule-grid">
+                <div class="schedule-card"><h3>📅 Pickup Schedule</h3>
+                    <div class="schedule-item"><span class="day">Monday</span><span class="time">08:00 – 12:00</span><span class="status-pill">Active</span></div>
+                    <div class="schedule-item"><span class="day">Tuesday</span><span class="time">09:00 – 13:00</span><span class="status-pill">Active</span></div>
+                    <div class="schedule-item"><span class="day">Wednesday</span><span class="time">08:00 – 12:00</span><span class="status-pill">Active</span></div>
+                    <div class="schedule-item"><span class="day">Thursday</span><span class="time">10:00 – 14:00</span><span class="status-pill soon">Soon</span></div>
+                    <div class="schedule-item"><span class="day">Friday</span><span class="time">08:00 – 12:00</span><span class="status-pill">Active</span></div>
+                    <div class="schedule-item"><span class="day">Saturday</span><span class="time">09:00 – 11:00</span><span class="status-pill">Active</span></div>
+                    <div class="schedule-item"><span class="day">Sunday</span><span class="time">—</span><span class="status-pill" style="background:var(--bg-secondary);color:var(--text-muted);">Closed</span></div>
+                </div>
+                <div class="schedule-card"><h3>📍 Upcoming Collections</h3>
+                    <div class="schedule-item"><span class="day">Downtown #01</span><span class="time">Today, 10:30</span><span class="status-pill soon">Due</span></div>
+                    <div class="schedule-item"><span class="day">Park Side #02</span><span class="time">Today, 14:00</span><span class="status-pill">Scheduled</span></div>
+                    <div class="schedule-item"><span class="day">Harbor #03</span><span class="time">Tomorrow, 09:00</span><span class="status-pill">Scheduled</span></div>
+                    <div class="schedule-item"><span class="day">East End #04</span><span class="time">Tomorrow, 11:30</span><span class="status-pill">Scheduled</span></div>
+                    <div class="schedule-item"><span class="day">West Gate #05</span><span class="time">Wed, 08:00</span><span class="status-pill">Scheduled</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PAGE: WASTE-TO-ENERGY ===== -->
+        <div class="page" id="page-energy">
+            <div class="energy-calc">
+                <h3 style="margin-bottom:14px;font-size:18px;">⚡ Waste-to-Energy Calculator</h3>
+                <div class="calc-row">
+                    <label>Waste Amount (kg)</label>
+                    <input type="range" id="wasteAmountRange" min="0" max="1000" value="500" step="10" />
+                    <span class="value-display" id="wasteAmountDisplay">500 kg</span>
+                </div>
+                <div class="calc-row">
+                    <label>Waste Type</label>
+                    <select id="wasteTypeSelect" style="flex:1;padding:10px 14px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-secondary);color:var(--text-primary);font-size:13px;">
+                        <option value="mixed">Mixed Waste</option>
+                        <option value="organic">Organic (food/yard)</option>
+                        <option value="plastic" selected>Plastic</option>
+                        <option value="paper">Paper/Cardboard</option>
+                        <option value="wood">Wood/Biomass</option>
+                    </select>
+                </div>
+                <div class="result-box">
+                    <div class="res-item"><div class="res-value" id="energyOutput">185.0</div><div class="res-label">kWh Energy</div></div>
+                    <div class="res-item"><div class="res-value" id="co2Output">42.5</div><div class="res-label">kg CO₂ Avoided</div></div>
+                    <div class="res-item"><div class="res-value" id="treesOutput">1.9</div><div class="res-label">Trees Equivalent</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PAGE: QR CODES ===== -->
+        <div class="page" id="page-qr">
+            <div class="qr-section">
+                <h3 style="margin-bottom:6px;">📱 Generate QR Code for Waste Item</h3>
+                <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">Scan to track item lifecycle and disposal info</p>
+                <div id="qrcode"></div>
+                <div class="qr-input-group">
+                    <input type="text" id="qrInput" placeholder="Enter item ID or waste type..." value="Waste-Item-2026" />
+                    <button id="qrGenerateBtn"><i class="fas fa-qrcode"></i> Generate</button>
+                </div>
+                <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+                    <span style="background:var(--bg-secondary);padding:4px 16px;border-radius:20px;font-size:12px;border:1px solid var(--border-color);">♻️ Recyclable</span>
+                    <span style="background:var(--bg-secondary);padding:4px 16px;border-radius:20px;font-size:12px;border:1px solid var(--border-color);">📦 Plastic #1</span>
+                    <span style="background:var(--bg-secondary);padding:4px 16px;border-radius:20px;font-size:12px;border:1px solid var(--border-color);">🌱 Compostable</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== CHATBOT ===== -->
+    <div class="chatbot-container">
+        <button class="chatbot-toggle" id="chatToggle"><i class="fas fa-robot"></i></button>
+        <div class="chatbot-window" id="chatWindow">
+            <div class="chat-header">
+                <h4>🤖 EcoWise Assistant</h4>
+                <button class="close-chat" id="chatClose"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="msg bot">👋 Hello! I'm your waste management assistant. Ask me about recycling, schedules, or tips!</div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Type a message..." />
+                <button id="chatSendBtn"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  DATA
+        // ============================================================
+        const binData = [
+            { id: 1, name: 'Downtown #01', fill: 78, status: 'yellow', location: 'Main St' },
+            { id: 2, name: 'Park Side #02', fill: 32, status: 'green', location: 'Central Park' },
+            { id: 3, name: 'Harbor #03', fill: 92, status: 'red', location: 'Waterfront' },
+            { id: 4, name: 'East End #04', fill: 45, status: 'green', location: 'East Ave' },
+            { id: 5, name: 'West Gate #05', fill: 63, status: 'yellow', location: 'West Blvd' },
+            { id: 6, name: 'North Hub #06', fill: 18, status: 'green', location: 'North Rd' },
+        ];
+        const leaderboardData = [
+            { name: 'Sarah Green', neighborhood: 'Downtown', points: 2847, avatar: 'SG' },
+            { name: 'Mike Recycle', neighborhood: 'Riverside', points: 2103, avatar: 'MR' },
+            { name: 'Emma Wastewise', neighborhood: 'Eastside', points: 1876, avatar: 'EW' },
+            { name: 'James Compost', neighborhood: 'Westend', points: 1642, avatar: 'JC' },
+            { name: 'Lisa Earth', neighborhood: 'Northgate', points: 1428, avatar: 'LE' },
+        ];
+        const badgesData = [
+            { icon: '♻️', name: 'Recycler', desc: 'Recycle 10 items', unlocked: true },
+            { icon: '🌱', name: 'Gardener', desc: 'Compost 5 kg', unlocked: true },
+            { icon: '📸', name: 'Scanner', desc: '5 AI scans', unlocked: true },
+            { icon: '🏅', name: 'Champion', desc: '500 points', unlocked: false },
+            { icon: '🌟', name: 'Eco Star', desc: '1000 points', unlocked: false },
+            { icon: '🌍', name: 'Planet Saver', desc: '2000 points', unlocked: true },
+        ];
+        const wasteTypes = [
+            { name: 'Plastic Bottle', category: 'Recyclable', material: 'PET Plastic', bio: 'No', score: 92 },
+            { name: 'Cardboard Box', category: 'Recyclable', material: 'Paper', bio: 'Yes', score: 95 },
+            { name: 'Apple Core', category: 'Organic', material: 'Biomass', bio: 'Yes', score: 98 },
+            { name: 'Glass Jar', category: 'Recyclable', material: 'Glass', bio: 'No', score: 88 },
+            { name: 'Aluminum Can', category: 'Recyclable', material: 'Metal', bio: 'No', score: 90 },
+            { name: 'Plastic Bag', category: 'Non-Recyclable', material: 'LDPE', bio: 'No', score: 35 },
+            { name: 'Battery', category: 'Hazardous', material: 'Lithium', bio: 'No', score: 15 },
+            { name: 'Paper Cup', category: 'Recyclable', material: 'Paper', bio: 'Yes', score: 72 },
+        ];
+        let userPoints = 2847;
+        let voiceReports = [];
+        let isListening = false;
+
+        // ============================================================
+        //  DOM REFS
+        // ============================================================
+        const loginOverlay = document.getElementById('loginOverlay');
+        const loginForm = document.getElementById('loginForm');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const menuToggle = document.getElementById('menuToggle');
+        const navItems = document.querySelectorAll('.nav-item');
+        const pages = document.querySelectorAll('.page');
+        const pageTitle = document.getElementById('pageTitle');
+        const toastContainer = document.getElementById('toastContainer');
+
+        // ============================================================
+        //  AUTH
+        // ============================================================
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPassword').value.trim();
+            if (email && pass) {
+                loginOverlay.classList.add('hidden');
+                showToast('✅ Welcome back!', 'success');
+            } else {
+                showToast('⚠️ Please enter credentials', 'error');
+            }
+        });
+        logoutBtn.addEventListener('click', () => {
+            loginOverlay.classList.remove('hidden');
+            showToast('👋 Logged out', 'info');
+        });
+
+        // ============================================================
+        //  SIDEBAR / NAV
+        // ============================================================
+        menuToggle.addEventListener('click', () => { sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('show'); });
+        sidebarOverlay.addEventListener('click', () => { sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('show'); });
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const pageId = item.dataset.page;
+                if (!pageId) return;
+                navItems.forEach(n => n.classList.remove('active'));
+                item.classList.add('active');
+                pages.forEach(p => p.classList.remove('active'));
+                const target = document.getElementById(`page-${pageId}`);
+                if (target) target.classList.add('active');
+                let label = item.childNodes[0].textContent.trim();
+                if (label.includes('AI')) label = 'AI Classify';
+                else if (label.includes('Smart')) label = 'Smart Bins';
+                else if (label.includes('Voice')) label = 'Voice Report';
+                else if (label.includes('Gamification')) label = 'Gamification';
+                else if (label.includes('Carbon')) label = 'Carbon';
+                else if (label.includes('Leaderboard')) label = 'Leaderboard';
+                else if (label.includes('Schedule')) label = 'Schedule';
+                else if (label.includes('Waste-to-Energy')) label = 'Waste-to-Energy';
+                else if (label.includes('QR')) label = 'QR Codes';
+                else label = label || 'Dashboard';
+                pageTitle.innerHTML = `${label} <span>overview</span>`;
+                sidebar.classList.remove('open');
+                sidebarOverlay.classList.remove('show');
+                if (pageId === 'dashboard') { renderDashboardCharts();
+                    renderWasteGallery(); }
+                if (pageId === 'bins') renderBinHistoryChart();
+                if (pageId === 'carbon') renderCarbonChart();
+                if (pageId === 'qr') generateQR();
+            });
+        });
+
+        // ============================================================
+        //  TOAST
+        // ============================================================
+        function showToast(msg, type = 'info') {
+            const icons = { success: '✅', error: '❌', info: 'ℹ️', warning: '⚠️' };
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML =
+                `<span class="icon">${icons[type] || 'ℹ️'}</span><span class="msg">${msg}</span><button class="close"><i class="fas fa-times"></i></button>`;
+            toast.querySelector('.close').addEventListener('click', () => toast.remove());
+            toastContainer.appendChild(toast);
+            setTimeout(() => toast.remove(), 5000);
+        }
+
+        // ============================================================
+        //  CHARTS (with updated colors)
+        // ============================================================
+        let trendChartInstance, compositionChartInstance, binHistoryInstance, carbonChartInstance;
+
+        function safeChart(ctx, config) {
+            try {
+                return new Chart(ctx, config);
+            } catch (e) {
+                console.warn('Chart error:', e);
+                return null;
+            }
+        }
+
+        function renderDashboardCharts() {
+            try {
+                const trendCtx = document.getElementById('trendChart').getContext('2d');
+                if (trendChartInstance) { trendChartInstance.destroy();
+                    trendChartInstance = null; }
+                const grad = trendCtx.createLinearGradient(0, 0, 0, 200);
+                grad.addColorStop(0, 'rgba(245, 183, 0, 0.25)');
+                grad.addColorStop(1, 'rgba(245, 183, 0, 0)');
+                trendChartInstance = safeChart(trendCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{ label: 'Waste (kg)', data: [320, 280, 410, 360, 490, 380, 250],
+                            borderColor: '#f5b700', backgroundColor: grad, fill: true, tension: 0.4,
+                            pointBackgroundColor: '#f5b700', pointBorderColor: '#080a14', pointBorderWidth: 2,
+                            pointRadius: 4 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        x: { grid: { display: false } } } }
+                });
+                const compCtx = document.getElementById('compositionChart').getContext('2d');
+                if (compositionChartInstance) { compositionChartInstance.destroy();
+                    compositionChartInstance = null; }
+                compositionChartInstance = safeChart(compCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Organic', 'Plastic', 'Paper', 'Glass', 'Metal'],
+                        datasets: [{ data: [42, 28, 15, 10, 5], backgroundColor: ['#f5b700', '#f59e0b',
+                                '#3b82f6', '#8b5cf6', '#ec4899'
+                            ], borderWidth: 2, borderColor: '#080a14' }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom',
+                                labels: { padding: 10, usePointStyle: true, color: '#a0b4d0' } } },
+                        cutout: '68%' }
+                });
+            } catch (e) { console.warn('Dashboard charts error:', e); }
+        }
+
+        function renderBinHistoryChart() {
+            try {
+                const ctx = document.getElementById('binHistoryChart').getContext('2d');
+                if (binHistoryInstance) { binHistoryInstance.destroy();
+                    binHistoryInstance = null; }
+                binHistoryInstance = safeChart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '23:00'],
+                        datasets: [{ label: 'Bin #03 Fill %', data: [45, 52, 68, 75, 82, 88, 92],
+                            backgroundColor: 'rgba(245, 183, 0, 0.4)', borderColor: '#f5b700', borderWidth: 2,
+                            borderRadius: 6 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.05)' } },
+                            x: { grid: { display: false } } } }
+                });
+            } catch (e) { console.warn('Bin history chart error:', e); }
+        }
+
+        function renderCarbonChart() {
+            try {
+                const ctx = document.getElementById('carbonChart').getContext('2d');
+                if (carbonChartInstance) { carbonChartInstance.destroy();
+                    carbonChartInstance = null; }
+                carbonChartInstance = safeChart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                        datasets: [{ label: 'CO₂ Saved (kg)', data: [420, 380, 560, 620],
+                            backgroundColor: ['rgba(245, 183, 0, 0.5)', 'rgba(245, 183, 0, 0.5)',
+                                'rgba(245, 183, 0, 0.5)', 'rgba(245, 183, 0, 0.5)'
+                            ], borderColor: '#f5b700', borderWidth: 2, borderRadius: 6 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        x: { grid: { display: false } } } }
+                });
+            } catch (e) { console.warn('Carbon chart error:', e); }
+        }
+
+        // ============================================================
+        //  RENDER WASTE GALLERY
+        // ============================================================
+        function renderWasteGallery() {
+            const gallery = document.getElementById('wasteGallery');
+            if (!gallery) return;
+            const items = [
+                { label: 'Plastic Bottle', type: 'Recyclable', emoji: '🧴', class: 'type-plastic' },
+                { label: 'Cardboard Box', type: 'Recyclable', emoji: '📦', class: 'type-recyclable' },
+                { label: 'Apple Core', type: 'Organic', emoji: '🍎', class: 'type-organic' },
+                { label: 'Glass Jar', type: 'Recyclable', emoji: '🥫', class: 'type-recyclable' },
+                { label: 'Aluminum Can', type: 'Recyclable', emoji: '🥤', class: 'type-plastic' },
+                { label: 'Battery', type: 'Hazardous', emoji: '🔋', class: 'type-hazardous' },
+            ];
+            gallery.innerHTML = '';
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = `gallery-item ${item.class}`;
+                div.innerHTML = `
+                    <div class="icon-wrap">${item.emoji}</div>
+                    <div class="label">${item.label}</div>
+                    <span class="badge-type">${item.type}</span>
+                `;
+                gallery.appendChild(div);
+            });
+        }
+
+        // ============================================================
+        //  BINS
+        // ============================================================
+        function renderBins() {
+            const grid = document.getElementById('binsGrid');
+            grid.innerHTML = '';
+            binData.forEach(bin => {
+                const statusMap = { green: '🟢 Operational', yellow: '🟡 Nearly Full', red: '🔴 Needs Collection' };
+                const fillColor = bin.fill < 50 ? 'green' : bin.fill < 75 ? 'yellow' : 'red';
+                const card = document.createElement('div');
+                card.className = 'bin-card';
+                card.innerHTML = `
+                    <div class="bin-header"><span class="bin-name"><i class="fas fa-trash-can" style="color:var(--gold);margin-right:6px;"></i>${bin.name}</span><span class="status ${bin.status}">${statusMap[bin.status]}</span></div>
+                    <div class="bin-level"><div class="level-bar"><div class="fill ${fillColor}" style="width:${bin.fill}%;"></div></div></div>
+                    <div class="bin-footer"><span>📍 ${bin.location}</span><span class="fill-pct">${bin.fill}%</span></div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // ============================================================
+        //  GAMIFICATION
+        // ============================================================
+        function renderBadges() {
+            const grid = document.getElementById('badgesGrid');
+            grid.innerHTML = '';
+            badgesData.forEach(b => {
+                const div = document.createElement('div');
+                div.className = `badge-item ${b.unlocked ? '' : 'locked'}`;
+                div.innerHTML =
+                    `<div class="icon">${b.icon}</div><div class="name">${b.name}</div><div class="desc">${b.desc}</div>${b.unlocked ? '<span style="font-size:9px;color:var(--gold);">✅</span>' : '<span style="font-size:9px;color:var(--text-muted);">🔒</span>'}`;
+                grid.appendChild(div);
+            });
+            document.getElementById('userPoints').textContent = userPoints.toLocaleString();
+            const nextLevel = 4000;
+            const progress = Math.min((userPoints / nextLevel) * 100, 100);
+            document.getElementById('levelFill').style.width = progress + '%';
+            document.getElementById('nextLevel').textContent = (nextLevel - userPoints).toLocaleString();
+        }
+
+        // ============================================================
+        //  LEADERBOARD
+        // ============================================================
+        function renderLeaderboard() {
+            const list = document.getElementById('leaderboardList');
+            list.innerHTML = '';
+            const sorted = [...leaderboardData].sort((a, b) => b.points - a.points);
+            sorted.forEach((item, idx) => {
+                const rankClass = idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : '';
+                const div = document.createElement('div');
+                div.className = 'lb-item';
+                div.innerHTML =
+                    `<span class="rank ${rankClass}">${idx + 1}</span><div class="avatar">${item.avatar}</div><div class="info"><div class="name">${item.name}</div><div class="neighborhood">📍 ${item.neighborhood}</div></div><div class="points">${item.points.toLocaleString()} pts</div>`;
+                list.appendChild(div);
+            });
+        }
+
+        // ============================================================
+        //  AI CLASSIFICATION
+        // ============================================================
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const thumbnailsContainer = document.getElementById('thumbnailsContainer');
+        const placeholder = document.getElementById('placeholder');
+        const resultContent = document.getElementById('resultContent');
+        const resultThumb = document.getElementById('resultThumb');
+        const predictionLabel = document.getElementById('predictionLabel');
+        const confidenceLabel = document.getElementById('confidenceLabel');
+        const confidenceFill = document.getElementById('confidenceFill');
+        const catCategory = document.getElementById('catCategory');
+        const catMaterial = document.getElementById('catMaterial');
+        const catBio = document.getElementById('catBio');
+        const catScore = document.getElementById('catScore');
+        const resetClassify = document.getElementById('resetClassify');
+        let uploadedFiles = [];
+
+        function handleFiles(files) {
+            uploadedFiles = Array.from(files);
+            thumbnailsContainer.innerHTML = '';
+            uploadedFiles.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = document.createElement('img');
+                    img.className = 'thumb';
+                    img.src = e.target.result;
+                    thumbnailsContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+            if (uploadedFiles.length > 0) simulateClassification(uploadedFiles[0]);
+        }
+
+        function simulateClassification(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                resultThumb.src = e.target.result;
+                const type = wasteTypes[Math.floor(Math.random() * wasteTypes.length)];
+                const confidence = 75 + Math.floor(Math.random() * 20);
+                predictionLabel.textContent = type.name;
+                confidenceLabel.textContent = `Confidence: ${confidence}%`;
+                confidenceFill.style.width = confidence + '%';
+                catCategory.textContent = type.category;
+                catMaterial.textContent = type.material;
+                catBio.textContent = type.bio;
+                catScore.textContent = type.score + ' / 100';
+                placeholder.style.display = 'none';
+                resultContent.style.display = 'block';
+                userPoints += 15;
+                document.getElementById('userPoints').textContent = userPoints.toLocaleString();
+                renderBadges();
+                showToast('🧠 AI classified! +15 points', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+        fileInput.addEventListener('change', (e) => { if (e.target.files.length > 0) handleFiles(e.target.files); });
+        uploadArea.addEventListener('dragover', (e) => { e.preventDefault();
+            uploadArea.classList.add('dragover'); });
+        uploadArea.addEventListener('dragleave', () => { uploadArea.classList.remove('dragover'); });
+        uploadArea.addEventListener('drop', (e) => { e.preventDefault();
+            uploadArea.classList.remove('dragover'); if (e.dataTransfer.files.length > 0) handleFiles(e.dataTransfer
+                .files); });
+        resetClassify.addEventListener('click', () => { placeholder.style.display = 'flex';
+            resultContent.style.display = 'none';
+            thumbnailsContainer.innerHTML = '';
+            uploadedFiles = [];
+            fileInput.value = ''; });
+
+        // ============================================================
+        //  VOICE REPORT
+        // ============================================================
+        const voiceStartBtn = document.getElementById('voiceStartBtn');
+        const voiceStopBtn = document.getElementById('voiceStopBtn');
+        const voiceSubmitBtn = document.getElementById('voiceSubmitBtn');
+        const voiceTranscript = document.getElementById('voiceTranscript');
+        const voiceStatusText = document.getElementById('voiceStatusText');
+        const voiceDot = document.getElementById('voiceDot');
+        const voiceReportsList = document.getElementById('voiceReportsList');
+        let recognition = null;
+        let currentTranscript = '';
+
+        try {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SR();
+                recognition.lang = 'en-US';
+                recognition.continuous = true;
+                recognition.interimResults = true;
+
+                recognition.onstart = () => {
+                    isListening = true;
+                    voiceDot.className = 'pulse-dot listening';
+                    voiceStatusText.textContent = '🎤 Listening... speak your report';
+                    voiceStartBtn.disabled = true;
+                    voiceStopBtn.disabled = false;
+                    voiceSubmitBtn.disabled = true;
+                    currentTranscript = '';
+                    voiceTranscript.innerHTML = '<span style="color:var(--text-muted);">Listening...</span>';
+                    showToast('🎤 Listening...', 'info');
+                };
+                recognition.onend = () => {
+                    isListening = false;
+                    voiceDot.className = 'pulse-dot';
+                    voiceStatusText.textContent = '⏹️ Stopped';
+                    voiceStartBtn.disabled = false;
+                    voiceStopBtn.disabled = true;
+                    if (currentTranscript.trim()) {
+                        voiceSubmitBtn.disabled = false;
+                        voiceTranscript.innerHTML = currentTranscript;
+                        showToast('✅ Speech captured! Submit your report.', 'success');
+                    } else {
+                        voiceTranscript.innerHTML = '<span class="placeholder-text">No speech detected. Try again.</span>';
+                    }
+                };
+                recognition.onresult = (event) => {
+                    let final = '';
+                    let interim = '';
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        if (event.results[i].isFinal) {
+                            final += event.results[i][0].transcript;
+                        } else {
+                            interim += event.results[i][0].transcript;
+                        }
+                    }
+                    const display = final || interim;
+                    if (display) {
+                        currentTranscript = final || interim;
+                        voiceTranscript.innerHTML = display;
+                    }
+                };
+                recognition.onerror = (event) => {
+                    console.warn('Speech error:', event.error);
+                    if (event.error === 'not-allowed') {
+                        showToast('⚠️ Microphone access denied.', 'error');
+                        voiceStatusText.textContent = '❌ Microphone blocked';
+                        voiceDot.className = 'pulse-dot';
+                        voiceStartBtn.disabled = false;
+                        voiceStopBtn.disabled = true;
+                    } else {
+                        showToast('⚠️ Speech error: ' + event.error, 'error');
+                    }
+                };
+            } else {
+                showToast('⚠️ Voice recognition not supported in this browser.', 'error');
+                voiceStartBtn.disabled = true;
+                voiceStatusText.textContent = '❌ Not supported';
+            }
+        } catch (e) {
+            console.warn('Voice init error:', e);
+            showToast('⚠️ Voice recognition unavailable', 'error');
+            voiceStartBtn.disabled = true;
+        }
+
+        voiceStartBtn.addEventListener('click', () => {
+            if (recognition) {
+                try { recognition.start(); } catch (e) { /* ignore */ }
+            }
+        });
+        voiceStopBtn.addEventListener('click', () => {
+            if (recognition) {
+                try { recognition.stop(); } catch (e) { /* ignore */ }
+            }
+        });
+        voiceSubmitBtn.addEventListener('click', () => {
+            if (currentTranscript.trim()) {
+                const report = { text: currentTranscript.trim(), time: new Date().toLocaleTimeString() };
+                voiceReports.push(report);
+                renderVoiceReports();
+                userPoints += 25;
+                document.getElementById('userPoints').textContent = userPoints.toLocaleString();
+                renderBadges();
+                showToast('📝 Report submitted! +25 points', 'success');
+                currentTranscript = '';
+                voiceTranscript.innerHTML = '<span class="placeholder-text">Your spoken report will appear here...</span>';
+                voiceSubmitBtn.disabled = true;
+                voiceStatusText.textContent = '✅ Report submitted!';
+                voiceDot.className = 'pulse-dot';
+            }
+        });
+
+        function renderVoiceReports() {
+            if (voiceReports.length === 0) {
+                voiceReportsList.innerHTML =
+                '<div style="color:var(--text-muted);font-size:13px;padding:8px 0;">No reports yet.</div>';
+                return;
+            }
+            voiceReportsList.innerHTML = voiceReports.map(r =>
+                `<div class="report-item"><span>📢 ${r.text}</span><span class="time">${r.time}</span></div>`
+            ).join('');
+        }
+
+        // ============================================================
+        //  QR CODE
+        // ============================================================
+        let qrInstance = null;
+
+        function generateQR() {
+            const input = document.getElementById('qrInput').value || 'Waste-Item-2026';
+            const container = document.getElementById('qrcode');
+            container.innerHTML = '';
+            try {
+                if (typeof QRCode !== 'undefined') {
+                    qrInstance = new QRCode(container, {
+                        text: input,
+                        width: 160,
+                        height: 160,
+                        colorDark: '#f5b700',
+                        colorLight: '#080a14',
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                    showToast('✅ QR Code generated for: ' + input, 'success');
+                } else {
+                    container.innerHTML = '<p style="color:var(--text-muted);">QR library not loaded. Please check your internet connection.</p>';
+                    showToast('⚠️ QR library not loaded', 'error');
+                }
+            } catch (e) {
+                container.innerHTML = '<p style="color:var(--text-muted);">Error generating QR code.</p>';
+                showToast('⚠️ QR generation error', 'error');
+                console.warn('QR error:', e);
+            }
+        }
+        document.getElementById('qrGenerateBtn').addEventListener('click', generateQR);
+        document.getElementById('qrInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') generateQR(); });
+
+        // ============================================================
+        //  WASTE-TO-ENERGY
+        // ============================================================
+        const wasteAmountRange = document.getElementById('wasteAmountRange');
+        const wasteAmountDisplay = document.getElementById('wasteAmountDisplay');
+        const wasteTypeSelect = document.getElementById('wasteTypeSelect');
+        const energyOutput = document.getElementById('energyOutput');
+        const co2Output = document.getElementById('co2Output');
+        const treesOutput = document.getElementById('treesOutput');
+
+        function updateEnergyCalc() {
+            const amount = parseInt(wasteAmountRange.value);
+            const type = wasteTypeSelect.value;
+            wasteAmountDisplay.textContent = amount + ' kg';
+            const factors = { mixed: 0.37, organic: 0.28, plastic: 0.42, paper: 0.33, wood: 0.48 };
+            const co2Factors = { mixed: 0.085, organic: 0.06, plastic: 0.12, paper: 0.07, wood: 0.05 };
+            const factor = factors[type] || 0.37;
+            const co2Factor = co2Factors[type] || 0.085;
+            const energy = amount * factor;
+            const co2 = amount * co2Factor;
+            const trees = co2 / 22.0;
+            energyOutput.textContent = energy.toFixed(1);
+            co2Output.textContent = co2.toFixed(1);
+            treesOutput.textContent = trees.toFixed(2);
+        }
+        wasteAmountRange.addEventListener('input', updateEnergyCalc);
+        wasteTypeSelect.addEventListener('change', updateEnergyCalc);
+        updateEnergyCalc();
+
+        // ============================================================
+        //  CHATBOT
+        // ============================================================
+        const chatToggle = document.getElementById('chatToggle');
+        const chatWindow = document.getElementById('chatWindow');
+        const chatClose = document.getElementById('chatClose');
+        const chatInput = document.getElementById('chatInput');
+        const chatSendBtn = document.getElementById('chatSendBtn');
+        const chatMessages = document.getElementById('chatMessages');
+
+        chatToggle.addEventListener('click', () => { chatWindow.classList.toggle('open'); });
+        chatClose.addEventListener('click', () => { chatWindow.classList.remove('open'); });
+
+        function sendChatMessage() {
+            const msg = chatInput.value.trim();
+            if (!msg) return;
+            chatMessages.innerHTML += `<div class="msg user">${msg}</div>`;
+            chatInput.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            const responses = [
+                '♻️ Great! Remember to separate recyclables from organic waste.',
+                '🌱 Composting food waste reduces methane emissions significantly.',
+                '📦 Plastic bottles take 450 years to decompose — recycle them!',
+                '🗑️ Did you know? E-waste contains valuable metals that can be recovered.',
+                '🚛 Our collection schedule is available on the Schedule page.',
+                '💡 Reduce waste by using reusable bags and containers.',
+                '🌍 Every small action counts. Keep up the good work!',
+                '🔋 Batteries should be disposed of at special collection points.'
+            ];
+            setTimeout(() => {
+                const botMsg = responses[Math.floor(Math.random() * responses.length)];
+                chatMessages.innerHTML += `<div class="msg bot">${botMsg}</div>`;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                if (chatMessages.children.length > 12) {
+                    chatMessages.innerHTML = `<div class="msg bot">👋 Let's keep chatting about waste management!</div>`;
+                }
+            }, 600);
+        }
+        chatSendBtn.addEventListener('click', sendChatMessage);
+        chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendChatMessage(); });
+
+        // ============================================================
+        //  NOTIFICATION
+        // ============================================================
+        document.getElementById('notifBtn').addEventListener('click', () => {
+            showToast('🔔 You have 3 unread notifications', 'info');
+        });
+
+        // ============================================================
+        //  LANGUAGE TOGGLE
+        // ============================================================
+        let lang = 'en';
+        document.getElementById('langToggle').addEventListener('click', () => {
+            lang = lang === 'en' ? 'ta' : 'en';
+            document.getElementById('langLabel').textContent = lang.toUpperCase();
+            const translations = {
+                en: {
+                    dashboard: 'Dashboard',
+                    classify: 'AI Classify',
+                    bins: 'Smart Bins',
+                    voice: 'Voice Report',
+                    gamification: 'Gamification',
+                    carbon: 'Carbon',
+                    leaderboard: 'Leaderboard',
+                    schedule: 'Schedule',
+                    energy: 'Waste-to-Energy',
+                    qr: 'QR Codes'
+                },
+                ta: {
+                    dashboard: 'கட்டுப்பாட்டு அறை',
+                    classify: 'AI வகைப்பாடு',
+                    bins: 'ஸ்மார்ட் தொட்டிகள்',
+                    voice: 'குரல் அறிக்கை',
+                    gamification: 'விளையாட்டு மயமாக்கல்',
+                    carbon: 'கார்பன் தடயம்',
+                    leaderboard: 'தலைவர் பட்டியல்',
+                    schedule: 'அட்டவணை',
+                    energy: 'கழிவு-ஆற்றல்',
+                    qr: 'QR குறியீடுகள்'
+                }
+            };
+            const t = translations[lang];
+            document.querySelectorAll('.nav-item').forEach(item => {
+                const key = item.dataset.page;
+                if (key && t[key]) {
+                    const badge = item.querySelector('.badge');
+                    let textNode = null;
+                    for (let child of item.childNodes) {
+                        if (child.nodeType === 3) { textNode = child; break; }
+                    }
+                    if (textNode) {
+                        textNode.textContent = t[key];
+                    } else {
+                        if (badge) {
+                            item.insertBefore(document.createTextNode(t[key] + ' '), badge);
+                        } else {
+                            item.appendChild(document.createTextNode(' ' + t[key]));
+                        }
+                    }
+                }
+            });
+            showToast(lang === 'ta' ? '🌐 மொழி மாற்றப்பட்டது' : '🌐 Language switched', 'info');
+        });
+
+        // ============================================================
+        //  GLOBAL SEARCH
+        // ============================================================
+        document.getElementById('globalSearch').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const val = e.target.value.trim();
+                if (val) showToast(`🔍 Searching for "${val}"...`, 'info');
+            }
+        });
+
+        // ============================================================
+        //  INIT
+        // ============================================================
+        function init() {
+            try {
+                renderBins();
+                renderBadges();
+                renderLeaderboard();
+                renderDashboardCharts();
+                renderBinHistoryChart();
+                renderCarbonChart();
+                renderVoiceReports();
+                renderWasteGallery();
+                setTimeout(() => { generateQR(); }, 400);
+                const dashItem = document.querySelector('.nav-item[data-page="dashboard"]');
+                if (dashItem) dashItem.click();
+            } catch (e) {
+                console.error('Init error:', e);
+                showToast('⚠️ Some features failed to load. Refresh the page.', 'error');
+            }
+        }
+
+        if (typeof Chart !== 'undefined') {
+            init();
+        } else {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+            script.onload = init;
+            script.onerror = () => {
+                showToast('⚠️ Chart library failed to load. Please check internet.', 'error');
+            };
+            document.head.appendChild(script);
+        }
+
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                try {
+                    if (document.getElementById('page-dashboard').classList.contains('active'))
+                    renderDashboardCharts();
+                    if (document.getElementById('page-bins').classList.contains('active')) renderBinHistoryChart();
+                    if (document.getElementById('page-carbon').classList.contains('active')) renderCarbonChart();
+                } catch (e) { /* ignore */ }
+            }, 300);
+        });
+
+        console.log('🌿 EcoWise Pro — Royal Blue & Gold Edition');
+        console.log('✨ Premium Theme · Error-Free · Fully Responsive');
+    </script>
+
+</body>
+</html>
